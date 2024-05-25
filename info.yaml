@@ -1,27 +1,39 @@
 # Tiny Tapeout project information
 project:
-  title:        "Tiny RISC-V"      # Project title
-  author:       "Erwan Régy"      # Your name
-  discord:      "dream235"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-  description:  "A single-cycle RV32I CPU"      # One line description of what your project does
-  language:     "SystemVerilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
-  clock_hz:     10       # Clock frequency in Hz (or 0 if not applicable)
+  title: "Tiny RISC-V" # Project title
+  author: "Erwan Régy" # Your name
+  discord: "dream235" # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
+  description: "A single-cycle RV32I CPU" # One line description of what your project does
+  language: "SystemVerilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
+  clock_hz: 10 # Clock frequency in Hz (or 0 if not applicable)
 
   # How many tiles your design occupies? A single tile is about 167x108 uM.
-  tiles: "1x1"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
+  tiles: "1x1" # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
 
   # Your top module name must start with "tt_um_". Make it unique by including your github username:
-  top_module:  "tt_um_example"
-  
+  top_module: "tt_um_riscv_cpu_erwanregy"
+
   # List your project's source files here. Source files must be in ./src and you must list each source file separately, one per line:
-  source_files:        
-    - "project.v"
+  source_files:
+    - "alu_operations.svh"
+    - "alu.sv"
+    - "branch_logic.sv"
+    - "control.svh"
+    - "cpu.sv"
+    - "funct3.svh"
+    - "immediate_generator.sv"
+    - "instruction_decoder.sv"
+    - "opcodes.svh"
+    - "ram.sv"
+    - "register_file.sv"
+    - "rom.sv"
+    - "tt_um_riscv_cpu_erwanregy.v"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
   # Inputs
-  ui[0]: "clock"
-  ui[1]: "reset"
+  ui[0]: ""
+  ui[1]: ""
   ui[2]: ""
   ui[3]: ""
   ui[4]: ""
