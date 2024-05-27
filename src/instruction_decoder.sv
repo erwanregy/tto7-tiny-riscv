@@ -1,7 +1,7 @@
-`include "opcodes.svh"
-`include "funct3.svh"
-`include "control.svh"
-`include "alu_operations.svh"
+// `include "opcodes.svh"
+// `include "funct3.svh"
+// `include "control.svh"
+// `include "alu_operations.svh"
 
 import opcodes::*;
 import funct3::*;

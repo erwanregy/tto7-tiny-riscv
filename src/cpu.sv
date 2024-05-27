@@ -1,4 +1,4 @@
-`include "control.svh"
+// `include "control.svh"
 
 import control::*;
 
