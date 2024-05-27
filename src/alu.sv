@@ -1,6 +1,6 @@
 `include "alu_operations.svh"
 
-import alu_operations::*;
+// import alu_operations::*;
 
 module alu (
     input alu_operation_t operation,
@@ -15,34 +15,34 @@ module alu (
 
     always_comb begin
         unique casez (operation)
-            Add: begin
+            alu_operations::Add: begin
                 result = operand_1 + operand_2;
             end
-            Subtract: begin
+            alu_operations::Subtract: begin
                 result = operand_1 - operand_2;
             end
-            Shift_Left_Logical: begin
+            alu_operations::Shift_Left_Logical: begin
                 result = operand_1 << shift_amount;
             end
-            Set_Less_Than: begin
+            alu_operations::Set_Less_Than: begin
                 result = operand_1 < operand_2;
             end
-            Set_Less_Than_Unsigned: begin
+            alu_operations::Set_Less_Than_Unsigned: begin
                 result = $unsigned(operand_1) < $unsigned(operand_2);
             end
-            Xor: begin
+            alu_operations::Xor: begin
                 result = operand_1 ^ operand_2;
             end
-            Shift_Right_Logical: begin
+            alu_operations::Shift_Right_Logical: begin
                 result = operand_1 >> shift_amount;
             end
-            Shift_Right_Arithmetic: begin
+            alu_operations::Shift_Right_Arithmetic: begin
                 result = operand_1 >>> shift_amount;
             end
-            Or: begin
+            alu_operations::Or: begin
                 result = operand_1 & operand_2;
             end
-            And: begin
+            alu_operations::And: begin
                 result = operand_1 & operand_2;
             end
             default: begin
