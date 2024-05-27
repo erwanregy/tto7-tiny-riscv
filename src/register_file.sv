@@ -13,24 +13,20 @@ module register_file (
     output [31:0] read_data_2
 );
 
-    logic [31:0] write_registers[1:31];
+    logic [31:0] registers[32];
 
     always_ff @(posedge clock, posedge reset)
         if (reset) begin
             // for (int i = 1; i < 32; ++i) begin
-            //     write_registers[i] <= 0;
+            //     registers[i] <= 0;
             // end
-            write_registers[2] <= 0;
+            registers[0] <= 0;
+            registers[2] <= 0;
         end else begin
-            if (write_enable) begin
-                write_registers[write_address] <= write_data;
+            if (write_address != 0 && write_enable) begin
+                registers[write_address] <= write_data;
             end
         end
-
-    wire [31:0] registers[32];
-
-    assign registers[0] = 0;
-    assign registers[1:31] = write_registers;
 
     assign read_data_1 = registers[read_address_1];
     assign read_data_2 = registers[read_address_2];

@@ -1,11 +1,13 @@
 module branch_logic (
+    input clock,
+    input reset,
     input branch,
     input [31:0] immediate,
     output logic [31:0] program_counter,
-    output program_counter_plus_4
+    output [31:0] program_counter_plus_4
 );
 
-    wire signed [31:0] relative_address = (immediate << 1); // TESTME: Is this correct?
+    wire signed [31:0] relative_address = (immediate << 1);  // TESTME: Is this correct?
 
     assign program_counter_plus_4 = program_counter + 4;
 

@@ -24,6 +24,8 @@ module cpu (
     wire [31:0] program_counter, program_counter_plus_4;
 
     branch_logic branch_logic (
+        .clock,
+        .reset,
         .branch(control.branch),
         .immediate,
         .program_counter,

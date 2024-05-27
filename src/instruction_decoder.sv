@@ -14,7 +14,7 @@ module instruction_decoder (
 
 
     opcode_t opcode;
-    assign opcode = opcode_t'(instruction[6:0]);
+    assign opcode = instruction[6:0];
 
     wire [2:0] funct3 = instruction[14:12];
 

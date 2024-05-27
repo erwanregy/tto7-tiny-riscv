@@ -2,11 +2,11 @@
 
 module immediate_generator (
     input [31:0] instruction,
-    output signed [31:0] immediate
+    output logic signed [31:0] immediate
 );
 
     opcode_t opcode;
-    assign opcode = opcode_t'(instruction[6:0]);
+    assign opcode = instruction[6:0];
 
     enum {
         R_Type,

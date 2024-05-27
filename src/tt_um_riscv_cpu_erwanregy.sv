@@ -16,14 +16,18 @@ module tt_um_riscv_cpu_erwanregy (
     input  wire       rst_n     // reset_n - low to reset
 );
 
+    wire write_enable;
+
     cpu cpu (
         .clock(clk),
         .reset(~rst_n),
 
         .address(uo_out),
-        .write_enable(uio_oe),
+        .write_enable,
         .write_data(uio_out),
         .read_data(uio_in)
     );
+
+    assign uio_oe = {8{write_enable}};
 
 endmodule
