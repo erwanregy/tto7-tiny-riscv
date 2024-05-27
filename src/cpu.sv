@@ -1,3 +1,5 @@
+`include "control.svh"
+
 import control::*;
 
 module cpu (

@@ -1,3 +1,5 @@
+`include "alu_operations.svh"
+
 import alu_operations::*;
 
 module alu (
