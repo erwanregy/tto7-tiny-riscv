@@ -3,7 +3,7 @@
 // import alu_operations::*;
 
 module alu (
-    input alu_operation_t operation,
+    input alu_operations::alu_operation_t operation,
 
     input signed [31:0] operand_1,
     input signed [31:0] operand_2,
