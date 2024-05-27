@@ -1,3 +1,6 @@
+`ifndef OPCODES_SVH
+`define OPCODES_SVH
+
 typedef enum logic [6:0] {
     Load_Upper_Immediate = 7'b0110111,
     Add_Upper_Immediate_To_Program_Counter = 7'b0010111,
@@ -65,3 +68,5 @@ typedef enum logic [31:0] {
     nop      = 32'b?????????????????????????_____0000000,
     invalid  = 0
 } operation_t;
+
+`endif

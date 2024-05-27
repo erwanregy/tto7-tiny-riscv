@@ -1,3 +1,6 @@
+`ifndef ALU_OPERATIONS_SVH
+`define ALU_OPERATIONS_SVH
+
 typedef enum {
     Add,
     Subtract,
@@ -11,3 +14,5 @@ typedef enum {
     And,
     Invalid
 } alu_operation_t;
+
+`endif

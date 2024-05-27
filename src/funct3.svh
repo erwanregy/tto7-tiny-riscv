@@ -1,3 +1,6 @@
+`ifndef FUNCT3_SVH
+`define FUNCT3_SVH
+
 // ALU
 `define ADD_OR_SUBTRACT 3'b000
 `define SHIFT_LEFT_LOGICAL 3'b001
@@ -31,3 +34,5 @@
 `define CSRRWI 3'b101
 `define CSRRSS 3'b110
 `define CSRRCI 3'b111
+
+`endif

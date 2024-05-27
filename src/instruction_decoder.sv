@@ -1,3 +1,8 @@
+`include "opcodes.svh"
+`include "funct3.svh"
+`include "control.svh"
+`include "alu_operations.svh"
+
 module instruction_decoder (
     input [31:0] instruction,
     input alu_result,

@@ -1,3 +1,5 @@
+`include "opcodes.svh"
+
 module immediate_generator (
     input [31:0] instruction,
     output signed [31:0] immediate

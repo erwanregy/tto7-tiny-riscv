@@ -1,3 +1,6 @@
+`ifndef CONTROL_SVH
+`define CONTROL_SVH
+
 typedef enum logic {
     Register_Read_Data_1 = 1'b0,
     Program_Counter = 1'b1
@@ -26,3 +29,5 @@ typedef struct packed {
     logic register_write_enable;
     register_write_data_source_t register_write_data_source;
 } control_t;
+
+`endif

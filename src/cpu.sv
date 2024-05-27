@@ -1,3 +1,5 @@
+`include "control.svh"
+
 module cpu (
     input clock,
     input reset,

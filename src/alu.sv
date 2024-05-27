@@ -1,3 +1,5 @@
+`include "alu_operations.svh"
+
 module alu (
     input alu_operation_t operation,
 
