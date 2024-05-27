@@ -5,7 +5,7 @@ module branch_logic (
     output program_counter_plus_4
 );
 
-    wire signed [31:0] relative_address = (immediate << 1);
+    wire signed [31:0] relative_address = (immediate << 1); // TESTME: Is this correct?
 
     assign program_counter_plus_4 = program_counter + 4;
 
