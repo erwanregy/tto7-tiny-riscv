@@ -27,7 +27,7 @@ project:
     - "ram.sv"
     - "register_file.sv"
     - "rom.sv"
-    - "tt_um_riscv_cpu_erwanregy.v"
+    - "tt_um_riscv_cpu_erwanregy.sv"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
