@@ -1,41 +1,33 @@
-package funct3;
+// ALU
+`define ADD_OR_SUBTRACT 3'b000
+`define SHIFT_LEFT_LOGICAL 3'b001
+`define SET_LESS_THAN 3'b010
+`define SET_LESS_THAN_UNSIGNED 3'b011
+`define XOR 3'b100
+`define SHIFT_RIGHT 3'b101
+`define OR 3'b110
+`define AND 3'b111
 
-    enum logic [2:0] {
-        Add_Or_Sub = 3'b000,
-        Shift_Left_Logical = 3'b001,
-        Set_Less_Than = 3'b010,
-        Set_Less_Than_Unsigned = 3'b011,
-        Xor = 3'b100,
-        Shift_Right = 3'b101,
-        Or = 3'b110,
-        And = 3'b111
-    } ALU_funct3;
+// Memory
+`define BYTE 3'b000
+`define HALFWORD 3'b001
+`define WORD 3'b010
+`define UNSIGNED_BYTE 3'b100
+`define UNSIGNED_HALFWORD 3'b101
 
-    enum logic [2:0] {
-        Byte = 3'b000,
-        Halfword = 3'b001,
-        Word = 3'b010,
-        Unsigned_Byte = 3'b100,
-        Unsigned_Halfword = 3'b101
-    } Memory_funct3;
+// Branch
+`define IF_EQUAL 3'b000
+`define IF_NOT_EQUAL 3'b001
+`define IF_LESS_THAN 3'b100
+`define IF_GREATER_THAN_OR_EQUAL 3'b101
+`define IF_LESS_THAN_UNSIGNED 3'b110
+`define IF_GREATER_THAN_OR_EQUAL_UNSIGNED 3'b111
 
-    enum logic [2:0] {
-        If_Equal = 3'b000,
-        If_Not_Equal = 3'b001,
-        If_Less_Than = 3'b100,
-        If_Greater_Than_Or_Equal = 3'b101,
-        If_Less_Than_Unsigned = 3'b110,
-        If_Greater_Than_Or_Equal_Unsigned = 3'b111
-    } Branch_funct3;
-
-    enum logic [2:0] {
-        ENV = 3'b000,
-        CSRRW = 3'b001,
-        CSRRS = 3'b010,
-        CSRRC = 3'b011,
-        CSRRWI = 3'b101,
-        CSRRSS = 3'b110,
-        CSRRCI = 3'b111
-    } System_funct3;
-
-endpackage
+// System
+`define ENV 3'b000
+`define CSRRW 3'b001
+`define CSRRS 3'b010
+`define CSRRC 3'b011
+`define CSRRWI 3'b101
+`define CSRRSS 3'b110
+`define CSRRCI 3'b111

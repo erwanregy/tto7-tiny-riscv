@@ -1,7 +1,3 @@
-// `include "control.svh"
-
-import control::*;
-
 module cpu (
     input clock,
     input reset,

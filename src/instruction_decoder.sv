@@ -1,18 +1,12 @@
-// `include "opcodes.svh"
-// `include "funct3.svh"
-// `include "control.svh"
-// `include "alu_operations.svh"
-
-import opcodes::*;
-import funct3::*;
-import control::*;
-import alu_operations::*;
-
 module instruction_decoder (
     input [31:0] instruction,
     input alu_result,
     output control_t control
 );
+
+    localparam bit False = 0;
+    localparam bit True = 1;
+
 
     opcode_t opcode;
     assign opcode = opcode_t'(instruction[6:0]);
@@ -22,6 +16,7 @@ module instruction_decoder (
     wire [6:0] funct7 = instruction[31:25];
 
     operation_t operation;
+
 
     always_comb begin
         control   = 0;
@@ -58,33 +53,33 @@ module instruction_decoder (
             end
             Branch: begin
                 unique casez (funct3)
-                    If_Equal: begin
+                    `IF_EQUAL: begin
                         control.alu_operation = Subtract;
                         control.branch = (alu_result == 0);
                         operation = beq;
                     end
-                    If_Not_Equal: begin
+                    `IF_NOT_EQUAL: begin
                         control.alu_operation = Subtract;
                         control.branch = (alu_result != 0);
                         operation = bne;
                     end
-                    If_Less_Than: begin
-                        control.alu_operation = alu_operations::Set_Less_Than;
+                    `IF_LESS_THAN: begin
+                        control.alu_operation = Set_Less_Than;
                         control.branch = (alu_result == True);
                         operation = blt;
                     end
-                    If_Greater_Than_Or_Equal: begin
-                        control.alu_operation = alu_operations::Set_Less_Than;
+                    `IF_GREATER_THAN_OR_EQUAL: begin
+                        control.alu_operation = Set_Less_Than;
                         control.branch = (alu_result == False);
                         operation = bge;
                     end
-                    If_Less_Than_Unsigned: begin
-                        control.alu_operation = alu_operations::Set_Less_Than_Unsigned;
+                    `IF_LESS_THAN_UNSIGNED: begin
+                        control.alu_operation = Set_Less_Than_Unsigned;
                         control.branch = (alu_result == True);
                         operation = bltu;
                     end
-                    If_Greater_Than_Or_Equal_Unsigned: begin
-                        control.alu_operation = alu_operations::Set_Less_Than_Unsigned;
+                    `IF_GREATER_THAN_OR_EQUAL_UNSIGNED: begin
+                        control.alu_operation = Set_Less_Than_Unsigned;
                         control.branch = (alu_result == False);
                         operation = bgeu;
                     end
@@ -107,19 +102,19 @@ module instruction_decoder (
                     control.memory_write_enable = True;
                 end
                 unique casez (funct3)
-                    Byte: begin
+                    `BYTE: begin
                         operation = (opcode == Load) ? lb : sb;
                     end
-                    Halfword: begin
+                    `HALFWORD: begin
                         operation = (opcode == Load) ? lh : sh;
                     end
-                    Word: begin
+                    `WORD: begin
                         operation = (opcode == Load) ? lw : sw;
                     end
-                    Unsigned_Byte: begin
+                    `UNSIGNED_BYTE: begin
                         operation = (opcode == Load) ? lbu : invalid;
                     end
-                    Unsigned_Halfword: begin
+                    `UNSIGNED_HALFWORD: begin
                         operation = (opcode == Load) ? lhu : invalid;
                     end
                     default: begin
@@ -133,7 +128,7 @@ module instruction_decoder (
                     control.alu_operand_2_source = Immediate;
                 end
                 unique casez (funct3)
-                    Add_Or_Sub: begin
+                    `ADD_OR_SUBTRACT: begin
                         if (opcode == Immediate_Arithmetic) begin
                             control.alu_operation = Add;
                             operation = addi;
@@ -147,33 +142,33 @@ module instruction_decoder (
                             end
                         end
                     end
-                    funct3::Shift_Left_Logical: begin
-                        control.alu_operation = alu_operations::Shift_Left_Logical;
+                    `SHIFT_LEFT_LOGICAL: begin
+                        control.alu_operation = Shift_Left_Logical;
                         operation = (opcode == Immediate_Arithmetic) ? slli : sll;
                     end
-                    funct3::Set_Less_Than_Unsigned: begin
-                        control.alu_operation = alu_operations::Set_Less_Than_Unsigned;
+                    `SET_LESS_THAN_UNSIGNED: begin
+                        control.alu_operation = Set_Less_Than_Unsigned;
                         operation = (opcode == Immediate_Arithmetic) ? slti : slt;
                     end
-                    funct3::Xor: begin
-                        control.alu_operation = alu_operations::Xor;
+                    `XOR: begin
+                        control.alu_operation = Xor;
                         operation = (opcode == Immediate_Arithmetic) ? xori : xor_;
                     end
-                    funct3::Shift_Right: begin
+                    `SHIFT_RIGHT: begin
                         if (funct7[5] == 0) begin
-                            control.alu_operation = alu_operations::Shift_Right_Logical;
+                            control.alu_operation = Shift_Right_Logical;
                             operation = (opcode == Immediate_Arithmetic) ? srli : srl;
                         end else begin
-                            control.alu_operation = alu_operations::Shift_Right_Arithmetic;
+                            control.alu_operation = Shift_Right_Arithmetic;
                             operation = (opcode == Immediate_Arithmetic) ? srai : sra;
                         end
                     end
-                    funct3::Or: begin
-                        control.alu_operation = alu_operations::Or;
+                    `OR: begin
+                        control.alu_operation = Or;
                         operation = (opcode == Immediate_Arithmetic) ? ori : or_;
                     end
-                    funct3::And: begin
-                        control.alu_operation = alu_operations::And;
+                    `AND: begin
+                        control.alu_operation = And;
                         operation = (opcode == Immediate_Arithmetic) ? andi : and_;
                     end
                     default: begin
