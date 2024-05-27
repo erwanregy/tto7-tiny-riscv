@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module tt_um_riscv_cpu_erwanregy    (
+module tt_um_riscv_cpu_erwanregy (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
@@ -16,14 +16,16 @@ module tt_um_riscv_cpu_erwanregy    (
     input  wire       rst_n     // reset_n - low to reset
 );
 
-    // All output pins must be assigned. If not used, assign to 0.
-    assign uo_out  = 0;
-    assign uio_out = 0;
-    assign uio_oe  = 0;
+    assign uio_oe = '1;  // Configure all IO pins as outputs
 
     cpu cpu (
         .clock(clk),
-        .reset(~rst_n)
+        .reset(~rst_n),
+
+        .address(uio_out[6:0]),
+        .write_enable(uio_out[7]),
+        .write_data(uo_out),
+        .read_data(ui_in)
     );
 
 endmodule
