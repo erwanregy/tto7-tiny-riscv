@@ -2,9 +2,15 @@ import control::*;
 
 module cpu (
     input clock,
-    input reset
+    input reset,
 
-    // Wishbone memory bus interface?
+    // TEMP: Simple memory bus interface
+    output [31:0] address,
+    output write_enable,
+    output [31:0] write_data,
+    input [31:0] read_data
+
+    // TODO: Wishbone memory bus interface?
 );
 
 
@@ -108,18 +114,25 @@ module cpu (
     );
 
 
-    // Data Memory
+    // // Data Memory
 
-    ram data_memory (
-        .clock,
+    // ram data_memory (
+    //     .clock,
 
-        .address(alu_result),
+    //     .address(alu_result),
 
-        .write_enable(control.memory_write_enable),
-        .write_data  (register_read_data_2),
+    //     .write_enable(control.memory_write_enable),
+    //     .write_data  (register_read_data_2),
 
-        .read_data(memory_read_data)
-    );
+    //     .read_data(memory_read_data)
+    // );
+
+
+    // TEMP: Simple memory bus interface
+
+    assign address = alu_result;
+    assign write_enable = control.memory_write_enable;
+    assign write_data = register_read_data_2;
 
 
 endmodule
