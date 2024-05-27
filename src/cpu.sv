@@ -96,7 +96,7 @@ module cpu (
     );
 
 
-    // TODO: Immediate Generator
+    // Immediate Generator
 
     immediate_generator immediate_generator (
         .instruction,
