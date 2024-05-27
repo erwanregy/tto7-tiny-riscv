@@ -21,4 +21,3 @@ module branch_logic (
         end
 
 endmodule
-;
