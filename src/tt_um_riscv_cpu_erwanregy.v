@@ -16,16 +16,14 @@ module tt_um_riscv_cpu_erwanregy (
     input  wire       rst_n     // reset_n - low to reset
 );
 
-    assign uio_oe = '1;  // Configure all IO pins as outputs
-
     cpu cpu (
         .clock(clk),
         .reset(~rst_n),
 
-        .address(uio_out[6:0]),
-        .write_enable(uio_out[7]),
-        .write_data(uo_out),
-        .read_data(ui_in)
+        .address(uo_out),
+        .write_enable(uio_oe),
+        .write_data(uio_out),
+        .read_data(uio_in)
     );
 
 endmodule
