@@ -1,6 +1,6 @@
 module rom #(
-    parameter int NUM_WORDS = 16,
-    parameter MEMORY_FILE = "code.hex"
+    // parameter MEMORY_FILE = "code.hex",
+    parameter int NUM_WORDS = 16
 ) (
     input [$clog2(NUM_WORDS)-1:0] address,
     output [31:0] data
@@ -8,7 +8,9 @@ module rom #(
 
     logic [31:0] memory[NUM_WORDS];
 
-    initial $readmemh(MEMORY_FILE, memory);
+    // initial $readmemh(MEMORY_FILE, memory);
+
+    `include "code.vmem"
 
     assign data = memory[address];
 

@@ -37,7 +37,9 @@ module cpu (
 
     wire [31:0] instruction;
 
-    rom instruction_memory (
+    rom #(
+        .NUM_WORDS(16)
+    ) instruction_memory (
         .address(program_counter),
         .data(instruction)
     );
