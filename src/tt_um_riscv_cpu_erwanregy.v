@@ -38,13 +38,18 @@ module branch_logic (
 	program_counter,
 	program_counter_plus_4
 );
+	parameter signed [31:0] ADDRESS_WIDTH = 32;
 	input clock;
 	input reset;
 	input branch;
 	input [31:0] immediate;
-	output reg [31:0] program_counter;
-	output wire [31:0] program_counter_plus_4;
-	wire signed [31:0] relative_address = immediate << 1;
+	output reg [ADDRESS_WIDTH - 1:0] program_counter;
+	output wire [ADDRESS_WIDTH - 1:0] program_counter_plus_4;
+	function automatic [ADDRESS_WIDTH - 1:0] sv2v_cast_3D987;
+		input reg [ADDRESS_WIDTH - 1:0] inp;
+		sv2v_cast_3D987 = inp;
+	endfunction
+	wire signed [ADDRESS_WIDTH - 1:0] relative_address = sv2v_cast_3D987(immediate << 1);
 	assign program_counter_plus_4 = program_counter + 4;
 	always @(posedge clock or posedge reset)
 		if (reset)
@@ -63,17 +68,21 @@ module cpu (
 	read_data
 );
 	reg _sv2v_0;
+	parameter signed [31:0] BUS_ADDRESS_WIDTH = 32;
+	parameter signed [31:0] BUS_DATA_WIDTH = 32;
 	input clock;
 	input reset;
-	output wire [31:0] address;
+	output wire [BUS_ADDRESS_WIDTH - 1:0] address;
 	output wire write_enable;
-	output wire [31:0] write_data;
-	input [31:0] read_data;
+	output wire [BUS_DATA_WIDTH - 1:0] write_data;
+	input [BUS_DATA_WIDTH - 1:0] read_data;
+	localparam signed [31:0] NumInstructions = 15;
+	localparam signed [31:0] InstructionAddressWidth = 4;
 	wire [38:0] control;
 	wire signed [31:0] immediate;
-	wire [31:0] program_counter;
-	wire [31:0] program_counter_plus_4;
-	branch_logic branch_logic(
+	wire [14:0] program_counter;
+	wire [14:0] program_counter_plus_4;
+	branch_logic #(.ADDRESS_WIDTH(InstructionAddressWidth)) branch_logic(
 		.clock(clock),
 		.reset(reset),
 		.branch(control[38]),
@@ -81,8 +90,8 @@ module cpu (
 		.program_counter(program_counter),
 		.program_counter_plus_4(program_counter_plus_4)
 	);
-	wire [31:0] instruction;
-	rom #(.NUM_WORDS(16)) instruction_memory(
+	wire [3:0] instruction;
+	rom #(.NUM_WORDS(NumInstructions)) instruction_memory(
 		.address(program_counter),
 		.data(instruction)
 	);
@@ -130,9 +139,22 @@ module cpu (
 		.operand_2((control[36] ? immediate : register_read_data_2)),
 		.result(alu_result)
 	);
-	assign address = alu_result;
+	function automatic signed [BUS_ADDRESS_WIDTH - 1:0] sv2v_cast_C6B10_signed;
+		input reg signed [BUS_ADDRESS_WIDTH - 1:0] inp;
+		sv2v_cast_C6B10_signed = inp;
+	endfunction
+	assign address = sv2v_cast_C6B10_signed(alu_result);
 	assign write_enable = control[3];
-	assign write_data = register_read_data_2;
+	function automatic signed [BUS_DATA_WIDTH - 1:0] sv2v_cast_3C259_signed;
+		input reg signed [BUS_DATA_WIDTH - 1:0] inp;
+		sv2v_cast_3C259_signed = inp;
+	endfunction
+	assign write_data = sv2v_cast_3C259_signed(register_read_data_2);
+	function automatic [31:0] sv2v_cast_32;
+		input reg [31:0] inp;
+		sv2v_cast_32 = inp;
+	endfunction
+	assign memory_read_data = sv2v_cast_32(read_data);
 	initial _sv2v_0 = 0;
 endmodule
 module immediate_generator (
@@ -445,7 +467,10 @@ module tt_um_riscv_cpu_erwanregy (
 	input wire clk;
 	input wire rst_n;
 	wire write_enable;
-	cpu cpu(
+	cpu #(
+		.BUS_ADDRESS_WIDTH(8),
+		.BUS_DATA_WIDTH(8)
+	) cpu(
 		.clock(clk),
 		.reset(~rst_n),
 		.address(uo_out),
