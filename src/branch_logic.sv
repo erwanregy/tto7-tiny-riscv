@@ -1,13 +1,15 @@
-module branch_logic (
+module branch_logic #(
+    parameter int ADDRESS_WIDTH = 32
+) (
     input clock,
     input reset,
     input branch,
     input [31:0] immediate,
-    output logic [31:0] program_counter,
-    output [31:0] program_counter_plus_4
+    output logic [ADDRESS_WIDTH-1:0] program_counter,
+    output [ADDRESS_WIDTH-1:0] program_counter_plus_4
 );
 
-    wire signed [31:0] relative_address = (immediate << 1);  // TESTME: Is this correct?
+    wire signed [ADDRESS_WIDTH-1:0] relative_address = ADDRESS_WIDTH'(immediate << 1);  // TESTME: Is this correct?
 
     assign program_counter_plus_4 = program_counter + 4;
 

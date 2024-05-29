@@ -1,17 +1,24 @@
 `include "control.svh"
 
-module cpu (
+module cpu #(
+    parameter int BUS_ADDRESS_WIDTH = 32,
+    parameter int BUS_DATA_WIDTH = 32
+) (
     input clock,
     input reset,
 
     // TEMP: Simple memory bus interface
-    output [31:0] address,
+    output [BUS_ADDRESS_WIDTH-1:0] address,
     output write_enable,
-    output [31:0] write_data,
-    input [31:0] read_data
+    output [BUS_DATA_WIDTH-1:0] write_data,
+    input [BUS_DATA_WIDTH-1:0] read_data
 
     // TODO: Wishbone memory bus interface?
 );
+
+
+    localparam int NumInstructions = 15;
+    localparam int InstructionAddressWidth = $clog2(NumInstructions);
 
 
     control_t control;
@@ -21,9 +28,11 @@ module cpu (
 
     wire signed [31:0] immediate;
 
-    wire [31:0] program_counter, program_counter_plus_4;
+    wire [NumInstructions-1:0] program_counter, program_counter_plus_4;
 
-    branch_logic branch_logic (
+    branch_logic #(
+        .ADDRESS_WIDTH(InstructionAddressWidth)
+    ) branch_logic (
         .clock,
         .reset,
         .branch(control.branch),
@@ -35,10 +44,10 @@ module cpu (
 
     // Instruction Memory
 
-    wire [31:0] instruction;
+    wire [InstructionAddressWidth-1:0] instruction;
 
     rom #(
-        .NUM_WORDS(16)
+        .NUM_WORDS(NumInstructions)
     ) instruction_memory (
         .address(program_counter),
         .data(instruction)
@@ -134,9 +143,10 @@ module cpu (
 
     // TEMP: Simple memory bus interface
 
-    assign address = alu_result;
+    assign address = BUS_ADDRESS_WIDTH'(alu_result);
     assign write_enable = control.memory_write_enable;
-    assign write_data = register_read_data_2;
+    assign write_data = BUS_DATA_WIDTH'(register_read_data_2);
+    assign memory_read_data = 32'(read_data);
 
 
 endmodule
