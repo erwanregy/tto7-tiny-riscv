@@ -6,7 +6,7 @@ module immediate_generator (
 );
 
     opcode_t opcode;
-    assign opcode = instruction[6:0];
+    assign opcode = opcode_t'(instruction[6:0]);
 
     enum {
         R_Type,
