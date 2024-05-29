@@ -18,7 +18,6 @@ module cpu #(
 
 
     localparam int NumInstructions = 15;
-    localparam int InstructionAddressWidth = $clog2(NumInstructions);
 
 
     control_t control;
@@ -28,7 +27,9 @@ module cpu #(
 
     wire signed [31:0] immediate;
 
-    wire [NumInstructions-1:0] program_counter, program_counter_plus_4;
+    localparam int InstructionAddressWidth = $clog2(NumInstructions);
+
+    wire [InstructionAddressWidth-1:0] program_counter, program_counter_plus_4;
 
     branch_logic #(
         .ADDRESS_WIDTH(InstructionAddressWidth)
@@ -44,7 +45,7 @@ module cpu #(
 
     // Instruction Memory
 
-    wire [InstructionAddressWidth-1:0] instruction;
+    wire [31:0] instruction;
 
     rom #(
         .NUM_WORDS(NumInstructions)

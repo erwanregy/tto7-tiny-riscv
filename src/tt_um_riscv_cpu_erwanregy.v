@@ -77,11 +77,11 @@ module cpu (
 	output wire [BUS_DATA_WIDTH - 1:0] write_data;
 	input [BUS_DATA_WIDTH - 1:0] read_data;
 	localparam signed [31:0] NumInstructions = 15;
-	localparam signed [31:0] InstructionAddressWidth = 4;
 	wire [38:0] control;
 	wire signed [31:0] immediate;
-	wire [14:0] program_counter;
-	wire [14:0] program_counter_plus_4;
+	localparam signed [31:0] InstructionAddressWidth = 4;
+	wire [3:0] program_counter;
+	wire [3:0] program_counter_plus_4;
 	branch_logic #(.ADDRESS_WIDTH(InstructionAddressWidth)) branch_logic(
 		.clock(clock),
 		.reset(reset),
@@ -90,7 +90,7 @@ module cpu (
 		.program_counter(program_counter),
 		.program_counter_plus_4(program_counter_plus_4)
 	);
-	wire [3:0] instruction;
+	wire [31:0] instruction;
 	rom #(.NUM_WORDS(NumInstructions)) instruction_memory(
 		.address(program_counter),
 		.data(instruction)
