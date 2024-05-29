@@ -6,6 +6,7 @@ from cocotb.clock import Clock
 from cocotb.triggers import ClockCycles
 
 
+# TODO: Write test
 @cocotb.test()
 async def test_project(dut):
     dut._log.info("Start")
