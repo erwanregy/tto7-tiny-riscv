@@ -1,21 +1,21 @@
 `ifndef CONTROL_SVH
 `define CONTROL_SVH
 
+`include "alu_operations.svh"
+
 typedef enum logic {
     Register_Read_Data_1 = 1'b0,
     Program_Counter = 1'b1
 } alu_operand_1_source_t;
 
 typedef enum logic {
-    Register_Read_Data_2 = 1'b0 // ,
-    // Immediate = 1'b1
+    Register_Read_Data_2 = 1'b0,
+    Immediate = 1'b1
 } alu_operand_2_source_t;
-
-localparam bit Immediate = 1;
 
 typedef enum logic [1:0] {
     ALU = 2'd0,
-    // Immediate = 2'd1,
+    Immediate_ = 2'd1,
     Memory = 2'd2,
     Program_Counter_Plus_4 = 2'd3
 } register_write_data_source_t;

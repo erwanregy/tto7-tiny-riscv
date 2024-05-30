@@ -29,7 +29,7 @@ module instruction_decoder (
         unique casez (opcode)
             Load_Upper_Immediate: begin
                 control.register_write_enable = True;
-                control.register_write_data_source = Immediate;
+                control.register_write_data_source = Immediate_;
                 operation = lui;
             end
             Add_Upper_Immediate_To_Program_Counter: begin
