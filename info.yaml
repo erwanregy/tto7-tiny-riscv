@@ -18,7 +18,6 @@ project:
     - "alu_operations.svh"
     - "alu.sv"
     - "branch_logic.sv"
-    - "code.hex"
     - "control.svh"
     - "cpu.sv"
     - "funct3.svh"
