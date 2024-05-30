@@ -1,19 +1,20 @@
 `include "control.svh"
+`include "alu_operations.svh"
 
 module cpu #(
     parameter int BUS_ADDRESS_WIDTH = 32,
     parameter int BUS_DATA_WIDTH = 32
 ) (
     input clock,
-    input reset,
+    input reset   // ,
 
-    // TEMP: Simple memory bus interface
-    output [BUS_ADDRESS_WIDTH-1:0] address,
-    output write_enable,
-    output [BUS_DATA_WIDTH-1:0] write_data,
-    input [BUS_DATA_WIDTH-1:0] read_data
+    // // TEMP: Simple memory bus interface
+    // output [BUS_ADDRESS_WIDTH-1:0] address,
+    // output write_enable,
+    // output [BUS_DATA_WIDTH-1:0] write_data,
+    // input [BUS_DATA_WIDTH-1:0] read_data
 
-    // TODO: Wishbone memory bus interface?
+    // // TODO: Wishbone memory bus interface?
 );
 
 
@@ -128,26 +129,26 @@ module cpu #(
     );
 
 
-    // // Data Memory
+    // Data Memory
 
-    // ram data_memory (
-    //     .clock,
+    ram data_memory (
+        .clock,
 
-    //     .address(alu_result),
+        .address(alu_result),
 
-    //     .write_enable(control.memory_write_enable),
-    //     .write_data  (register_read_data_2),
+        .write_enable(control.memory_write_enable),
+        .write_data  (register_read_data_2),
 
-    //     .read_data(memory_read_data)
-    // );
+        .read_data(memory_read_data)
+    );
 
 
-    // TEMP: Simple memory bus interface
+    // // TEMP: Simple memory bus interface
 
-    assign address = BUS_ADDRESS_WIDTH'(alu_result);
-    assign write_enable = control.memory_write_enable;
-    assign write_data = BUS_DATA_WIDTH'(register_read_data_2);
-    assign memory_read_data = 32'(read_data);
+    // assign address = BUS_ADDRESS_WIDTH'(alu_result);
+    // assign write_enable = control.memory_write_enable;
+    // assign write_data = BUS_DATA_WIDTH'(register_read_data_2);
+    // assign memory_read_data = 32'(read_data);
 
 
 endmodule

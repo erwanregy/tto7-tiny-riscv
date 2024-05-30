@@ -5,7 +5,7 @@ module alu (
 	result
 );
 	reg _sv2v_0;
-	input wire [31:0] operation;
+	input [3:0] operation;
 	input signed [31:0] operand_1;
 	input signed [31:0] operand_2;
 	output reg signed [31:0] result;
@@ -61,23 +61,15 @@ module branch_logic (
 endmodule
 module cpu (
 	clock,
-	reset,
-	address,
-	write_enable,
-	write_data,
-	read_data
+	reset
 );
 	reg _sv2v_0;
 	parameter signed [31:0] BUS_ADDRESS_WIDTH = 32;
 	parameter signed [31:0] BUS_DATA_WIDTH = 32;
 	input clock;
 	input reset;
-	output wire [BUS_ADDRESS_WIDTH - 1:0] address;
-	output wire write_enable;
-	output wire [BUS_DATA_WIDTH - 1:0] write_data;
-	input [BUS_DATA_WIDTH - 1:0] read_data;
 	localparam signed [31:0] NumInstructions = 15;
-	wire [38:0] control;
+	wire [10:0] control;
 	wire signed [31:0] immediate;
 	localparam signed [31:0] InstructionAddressWidth = 4;
 	wire [3:0] program_counter;
@@ -85,7 +77,7 @@ module cpu (
 	branch_logic #(.ADDRESS_WIDTH(InstructionAddressWidth)) branch_logic(
 		.clock(clock),
 		.reset(reset),
-		.branch(control[38]),
+		.branch(control[10]),
 		.immediate(immediate),
 		.program_counter(program_counter),
 		.program_counter_plus_4(program_counter_plus_4)
@@ -133,27 +125,18 @@ module cpu (
 		.immediate(immediate)
 	);
 	alu alu(
-		.operation(control[35-:32]),
-		.operand_1((control[37] ? program_counter : register_read_data_1)),
-		.operand_2((control[36] ? immediate : register_read_data_2)),
+		.operation(control[7-:4]),
+		.operand_1((control[9] ? program_counter : register_read_data_1)),
+		.operand_2((control[8] ? immediate : register_read_data_2)),
 		.result(alu_result)
 	);
-	function automatic signed [BUS_ADDRESS_WIDTH - 1:0] sv2v_cast_C6B10_signed;
-		input reg signed [BUS_ADDRESS_WIDTH - 1:0] inp;
-		sv2v_cast_C6B10_signed = inp;
-	endfunction
-	assign address = sv2v_cast_C6B10_signed(alu_result);
-	assign write_enable = control[3];
-	function automatic signed [BUS_DATA_WIDTH - 1:0] sv2v_cast_3C259_signed;
-		input reg signed [BUS_DATA_WIDTH - 1:0] inp;
-		sv2v_cast_3C259_signed = inp;
-	endfunction
-	assign write_data = sv2v_cast_3C259_signed(register_read_data_2);
-	function automatic [31:0] sv2v_cast_32;
-		input reg [31:0] inp;
-		sv2v_cast_32 = inp;
-	endfunction
-	assign memory_read_data = sv2v_cast_32(read_data);
+	ram data_memory(
+		.clock(clock),
+		.address(alu_result),
+		.write_enable(control[3]),
+		.write_data(register_read_data_2),
+		.read_data(memory_read_data)
+	);
 	initial _sv2v_0 = 0;
 endmodule
 module immediate_generator (
@@ -202,7 +185,7 @@ module instruction_decoder (
 	reg _sv2v_0;
 	input [31:0] instruction;
 	input alu_result;
-	output reg [38:0] control;
+	output reg [10:0] control;
 	localparam [0:0] False = 0;
 	localparam [0:0] True = 1;
 	wire [6:0] opcode;
@@ -224,24 +207,24 @@ module instruction_decoder (
 			end
 			7'b0010111: begin
 				control[2] = True;
-				control[37] = 1'b1;
-				control[36] = 1'b1;
-				control[35-:32] = 32'd0;
+				control[9] = 1'b1;
+				control[8] = 1'b1;
+				control[7-:4] = 32'd0;
 				control[2] = True;
 				control[1-:2] = 2'd0;
 				operation = 32'bzzzzzzzzzzzzzzzzzzzzzzzzz0010111;
 			end
 			7'b1101111: begin
-				control[37] = 1'b1;
-				control[36] = 1'b1;
-				control[35-:32] = 32'd0;
+				control[9] = 1'b1;
+				control[8] = 1'b1;
+				control[7-:4] = 32'd0;
 				control[2] = True;
 				control[1-:2] = 2'd3;
 				operation = 32'bzzzzzzzzzzzzzzzzzzzzzzzzz1101111;
 			end
 			7'b1100111: begin
-				control[36] = 1'b1;
-				control[35-:32] = 32'd0;
+				control[8] = 1'b1;
+				control[7-:4] = 32'd0;
 				control[2] = True;
 				control[1-:2] = 2'd3;
 				operation = 32'bzzzzzzzzzzzzzzzzz000zzzzz1100111;
@@ -250,44 +233,44 @@ module instruction_decoder (
 				(* full_case, parallel_case *)
 				casez (funct3)
 					3'b000: begin
-						control[35-:32] = 32'd1;
-						control[38] = alu_result == 0;
+						control[7-:4] = 32'd1;
+						control[10] = alu_result == 0;
 						operation = 32'bzzzzzzzzzzzzzzzzz000zzzzz1100011;
 					end
 					3'b001: begin
-						control[35-:32] = 32'd1;
-						control[38] = alu_result != 0;
+						control[7-:4] = 32'd1;
+						control[10] = alu_result != 0;
 						operation = 32'bzzzzzzzzzzzzzzzzz001zzzzz1100011;
 					end
 					3'b100: begin
-						control[35-:32] = 32'd3;
-						control[38] = alu_result == True;
+						control[7-:4] = 32'd3;
+						control[10] = alu_result == True;
 						operation = 32'bzzzzzzzzzzzzzzzzz100zzzzz1100011;
 					end
 					3'b101: begin
-						control[35-:32] = 32'd3;
-						control[38] = alu_result == False;
+						control[7-:4] = 32'd3;
+						control[10] = alu_result == False;
 						operation = 32'bzzzzzzzzzzzzzzzzz101zzzzz1100011;
 					end
 					3'b110: begin
-						control[35-:32] = 32'd4;
-						control[38] = alu_result == True;
+						control[7-:4] = 32'd4;
+						control[10] = alu_result == True;
 						operation = 32'bzzzzzzzzzzzzzzzzz110zzzzz1100011;
 					end
 					3'b111: begin
-						control[35-:32] = 32'd4;
-						control[38] = alu_result == False;
+						control[7-:4] = 32'd4;
+						control[10] = alu_result == False;
 						operation = 32'bzzzzzzzzzzzzzzzzz111zzzzz1100011;
 					end
 					default: begin
-						control[35-:32] = 32'd10;
-						control[38] = False;
+						control[7-:4] = 32'd10;
+						control[10] = False;
 						operation = 32'd0;
 					end
 				endcase
 			7'b0z00011: begin
-				control[36] = 1'b1;
-				control[35-:32] = 32'd0;
+				control[8] = 1'b1;
+				control[7-:4] = 32'd0;
 				if (opcode == 7'b0000011) begin
 					control[2] = True;
 					control[1-:2] = 2'd2;
@@ -307,53 +290,53 @@ module instruction_decoder (
 			7'b0z10011: begin
 				control[2] = True;
 				if (opcode == 7'b0010011)
-					control[36] = 1'b1;
+					control[8] = 1'b1;
 				(* full_case, parallel_case *)
 				casez (funct3)
 					3'b000:
 						if (opcode == 7'b0010011) begin
-							control[35-:32] = 32'd0;
+							control[7-:4] = 32'd0;
 							operation = 32'bzzzzzzzzzzzzzzzzz000zzzzz0010011;
 						end
 						else if (funct7[5] == 0) begin
-							control[35-:32] = 32'd0;
+							control[7-:4] = 32'd0;
 							operation = 32'b0000000zzzzzzzzzz000zzzzz0110011;
 						end
 						else begin
-							control[35-:32] = 32'd1;
+							control[7-:4] = 32'd1;
 							operation = 32'b0100000zzzzzzzzzz000zzzzz0110011;
 						end
 					3'b001: begin
-						control[35-:32] = 32'd2;
+						control[7-:4] = 32'd2;
 						operation = (opcode == 7'b0010011 ? 32'b0000000zzzzzzzzzz001zzzzz0010011 : 32'b0000000zzzzzzzzzz001zzzzz0110011);
 					end
 					3'b011: begin
-						control[35-:32] = 32'd4;
+						control[7-:4] = 32'd4;
 						operation = (opcode == 7'b0010011 ? 32'bzzzzzzzzzzzzzzzzz010zzzzz0010011 : 32'b0000000zzzzzzzzzz010zzzzz0110011);
 					end
 					3'b100: begin
-						control[35-:32] = 32'd5;
+						control[7-:4] = 32'd5;
 						operation = (opcode == 7'b0010011 ? 32'bzzzzzzzzzzzzzzzzz100zzzzz0010011 : 32'b0000000zzzzzzzzzz100zzzzz0110011);
 					end
 					3'b101:
 						if (funct7[5] == 0) begin
-							control[35-:32] = 32'd6;
+							control[7-:4] = 32'd6;
 							operation = (opcode == 7'b0010011 ? 32'b0000000zzzzzzzzzz101zzzzz0010011 : 32'b0000000zzzzzzzzzz101zzzzz0110011);
 						end
 						else begin
-							control[35-:32] = 32'd7;
+							control[7-:4] = 32'd7;
 							operation = (opcode == 7'b0010011 ? 32'b0100000zzzzzzzzzz101zzzzz0010011 : 32'b0100000zzzzzzzzzz101zzzzz0110011);
 						end
 					3'b110: begin
-						control[35-:32] = 32'd8;
+						control[7-:4] = 32'd8;
 						operation = (opcode == 7'b0010011 ? 32'bzzzzzzzzzzzzzzzzz110zzzzz0010011 : 32'b0000000zzzzzzzzzz110zzzzz0110011);
 					end
 					3'b111: begin
-						control[35-:32] = 32'd9;
+						control[7-:4] = 32'd9;
 						operation = (opcode == 7'b0010011 ? 32'bzzzzzzzzzzzzzzzzz111zzzzz0010011 : 32'b0000000zzzzzzzzzz111zzzzz0110011);
 					end
 					default: begin
-						control[35-:32] = 32'd10;
+						control[7-:4] = 32'd10;
 						operation = 32'd0;
 					end
 				endcase
@@ -464,17 +447,12 @@ module tt_um_riscv_cpu_erwanregy (
 	input wire ena;
 	input wire clk;
 	input wire rst_n;
-	wire write_enable;
 	cpu #(
 		.BUS_ADDRESS_WIDTH(8),
 		.BUS_DATA_WIDTH(8)
 	) cpu(
 		.clock(clk),
-		.reset(~rst_n),
-		.address(uo_out),
-		.write_enable(write_enable),
-		.write_data(uio_out),
-		.read_data(uio_in)
+		.reset(~rst_n)
 	);
-	assign uio_oe = {8 {write_enable}};
+	assign {uo_out, uio_out} = 0;
 endmodule

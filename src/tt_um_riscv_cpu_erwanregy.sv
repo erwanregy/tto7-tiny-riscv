@@ -16,7 +16,7 @@ module tt_um_riscv_cpu_erwanregy (
     input  wire       rst_n     // reset_n - low to reset
 );
 
-    wire write_enable;
+    // wire write_enable;
 
     // TODO: Serial (e.g. UART) interface to get around limited number of pins?
     cpu #(
@@ -24,14 +24,16 @@ module tt_um_riscv_cpu_erwanregy (
         .BUS_DATA_WIDTH(8)
     ) cpu (
         .clock(clk),
-        .reset(~rst_n),
+        .reset(~rst_n)  // ,
 
-        .address(uo_out),
-        .write_enable,
-        .write_data(uio_out),
-        .read_data(uio_in)
+        // .address(uo_out),
+        // .write_enable,
+        // .write_data(uio_out),
+        // .read_data(uio_in)
     );
 
-    assign uio_oe = {8{write_enable}};
+    // assign uio_oe = {8{write_enable}};
+
+    assign {uo_out, uio_out} = 0;
 
 endmodule
