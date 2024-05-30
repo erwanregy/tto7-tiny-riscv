@@ -15,21 +15,21 @@ project:
 
   # List your project's source files here. Source files must be in ./src and you must list each source file separately, one per line:
   source_files:
-    # - "alu_operations.svh"
-    # - "alu.sv"
-    # - "branch_logic.sv"
-    # - "code.hex"
-    # - "control.svh"
-    # - "cpu.sv"
-    # - "funct3.svh"
-    # - "immediate_generator.sv"
-    # - "instruction_decoder.sv"
-    # - "opcodes.svh"
-    # - "ram.sv"
-    # - "register_file.sv"
-    # - "rom.sv"
-    # - "tt_um_riscv_cpu_erwanregy.sv"
-    - "tt_um_riscv_cpu_erwanregy.v"
+    - "alu_operations.svh"
+    - "alu.sv"
+    - "branch_logic.sv"
+    - "code.hex"
+    - "control.svh"
+    - "cpu.sv"
+    - "funct3.svh"
+    - "immediate_generator.sv"
+    - "instruction_decoder.sv"
+    - "opcodes.svh"
+    - "ram.sv"
+    - "register_file.sv"
+    - "rom.sv"
+    - "tt_um_riscv_cpu_erwanregy.sv"
+    # - "tt_um_riscv_cpu_erwanregy.v"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:

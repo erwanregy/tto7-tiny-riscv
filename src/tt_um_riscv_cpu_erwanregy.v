@@ -42,14 +42,14 @@ module branch_logic (
 	input clock;
 	input reset;
 	input branch;
-	input [31:0] immediate;
+	input signed [31:0] immediate;
 	output reg [ADDRESS_WIDTH - 1:0] program_counter;
 	output wire [ADDRESS_WIDTH - 1:0] program_counter_plus_4;
-	function automatic [ADDRESS_WIDTH - 1:0] sv2v_cast_3D987;
-		input reg [ADDRESS_WIDTH - 1:0] inp;
-		sv2v_cast_3D987 = inp;
+	function automatic signed [ADDRESS_WIDTH - 1:0] sv2v_cast_3D987_signed;
+		input reg signed [ADDRESS_WIDTH - 1:0] inp;
+		sv2v_cast_3D987_signed = inp;
 	endfunction
-	wire signed [ADDRESS_WIDTH - 1:0] relative_address = sv2v_cast_3D987(immediate << 1);
+	wire signed [ADDRESS_WIDTH - 1:0] relative_address = sv2v_cast_3D987_signed(immediate << 1);
 	assign program_counter_plus_4 = program_counter + 4;
 	always @(posedge clock or posedge reset)
 		if (reset)
@@ -100,7 +100,6 @@ module cpu (
 	wire signed [31:0] register_read_data_1;
 	wire signed [31:0] register_read_data_2;
 	reg signed [31:0] register_write_data;
-	localparam [0:0] Immediate = 1;
 	always @(*) begin
 		if (_sv2v_0)
 			;
@@ -108,7 +107,7 @@ module cpu (
 		casez (control[1-:2])
 			2'd0: register_write_data = alu_result;
 			2'd2: register_write_data = memory_read_data;
-			Immediate: register_write_data = immediate;
+			1'b1: register_write_data = immediate;
 			2'd3: register_write_data = program_counter_plus_4;
 			default: register_write_data = 0;
 		endcase
@@ -211,7 +210,6 @@ module instruction_decoder (
 	wire [2:0] funct3 = instruction[14:12];
 	wire [6:0] funct7 = instruction[31:25];
 	reg [31:0] operation;
-	localparam [0:0] Immediate = 1;
 	always @(*) begin
 		if (_sv2v_0)
 			;
@@ -221,13 +219,13 @@ module instruction_decoder (
 		casez (opcode)
 			7'b0110111: begin
 				control[2] = True;
-				control[1-:2] = Immediate;
+				control[1-:2] = 2'd1;
 				operation = 32'bzzzzzzzzzzzzzzzzzzzzzzzzz0110111;
 			end
 			7'b0010111: begin
 				control[2] = True;
 				control[37] = 1'b1;
-				control[36] = Immediate;
+				control[36] = 1'b1;
 				control[35-:32] = 32'd0;
 				control[2] = True;
 				control[1-:2] = 2'd0;
@@ -235,14 +233,14 @@ module instruction_decoder (
 			end
 			7'b1101111: begin
 				control[37] = 1'b1;
-				control[36] = Immediate;
+				control[36] = 1'b1;
 				control[35-:32] = 32'd0;
 				control[2] = True;
 				control[1-:2] = 2'd3;
 				operation = 32'bzzzzzzzzzzzzzzzzzzzzzzzzz1101111;
 			end
 			7'b1100111: begin
-				control[36] = Immediate;
+				control[36] = 1'b1;
 				control[35-:32] = 32'd0;
 				control[2] = True;
 				control[1-:2] = 2'd3;
@@ -288,7 +286,7 @@ module instruction_decoder (
 					end
 				endcase
 			7'b0z00011: begin
-				control[36] = Immediate;
+				control[36] = 1'b1;
 				control[35-:32] = 32'd0;
 				if (opcode == 7'b0000011) begin
 					control[2] = True;
@@ -309,7 +307,7 @@ module instruction_decoder (
 			7'b0z10011: begin
 				control[2] = True;
 				if (opcode == 7'b0010011)
-					control[36] = Immediate;
+					control[36] = 1'b1;
 				(* full_case, parallel_case *)
 				casez (funct3)
 					3'b000:
